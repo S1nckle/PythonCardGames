@@ -60,7 +60,7 @@ class BlackJack:
         print('|============(Dealer must take until 17)===========|', end='\n\n')
 
     def play(self, bet=0):
-        doubled = False
+        doubled = 0
         for i in range(2):
             self.dealer.take(self.deck.draw())
             self.player.take(self.deck.draw())
@@ -73,14 +73,14 @@ class BlackJack:
             self.print_state()
             if drawn_dealer == 21:
                 print("Stay!".center(52, ' '))
-                return
+                return bet
             else:
                 print("You won!".center(52, ' '))
-                return
+                return bet * 2
         elif drawn_dealer == 21:
             self.print_state()
             print("Dealer won!".center(52, ' '))
-            return
+            return 0
 
 
         move = input('Type H to HIT, D to DOUBLE, S to SPLIT and ANY to STAY: \n')
@@ -94,10 +94,13 @@ class BlackJack:
                 else:
                     self.print_state()
                     print("Dealer won!".center(52, ' '))
-                    return
+                    return 0 - bet * doubled
             if move == BlackJack.DOUBLE:
                 self.player.take(self.deck.draw())
-                doubled = True
+                doubled = 1
+                if BlackJack.count_total(self.player) > 21:
+                    print("Dealer won!".center(52, ' '))
+                    return 0 - bet * doubled
                 break
             if move == BlackJack.SPLIT:
                 print("We don't split.\n")
@@ -111,16 +114,18 @@ class BlackJack:
         dealer_total = BlackJack.count_total(self.dealer)
         if dealer_total > 21:
             print("You won!".center(52, ' '))
-            return
+            return bet * 2 + bet * doubled
 
         player_total = BlackJack.count_total(self.player)
         if player_total > dealer_total:
             print("You won!".center(52, ' '))
+            return bet * 2 + bet * doubled
         elif player_total < dealer_total:
             print("Dealer won!".center(52, ' '))
+            return 0 - bet * doubled
         else:
             print("Stay!".center(52, ' '))
-        return
+            return bet
 
 
 
@@ -132,11 +137,20 @@ def main(money: int):
     bj.deck.shuffle()
     if not RESHUFFLE_EVERY_ROUND:
         cut = randint(bj.deck.get_size() // 4, bj.deck.get_size() // 2)
-
+    if BETS:
+        last_bet = 0
+        gained = 0
+        lost = 0
     while True:
         bet = 0
         if BETS:
-            bet = int(input("Place your bet: "))
+            try:
+                bet = int(input("Place your bet: "))
+            except Exception:
+                bet = last_bet
+            last_bet = bet
+            money -= bet
+            lost += bet
         if not RESHUFFLE_EVERY_ROUND:
             if bj.deck.get_size() < cut:
                 bj.deck.reset()
@@ -146,15 +160,25 @@ def main(money: int):
             bj.deck.reset()
             bj.deck.shuffle()
 
-        bj.play(bet)
+        gain = bj.play(bet)
         bj.player.clear()
         bj.dealer.clear()
+
+        if BETS:
+            money += gain
+            gained += gain - bet
+            lost -= gain
+            print(f"Your networth: {money}$")
+
         if input("L to Leave, ANY to continue\n\n") == 'L':
+            if BETS:
+                print(f"Your networth remained at {money}")
+                print(f"You lost {max(0, lost)}$ and gained {max(0, gained)}$ while playing")
             print("Thanks for game.")
             break
 
 
 bj = BlackJack()
-BETS = False
+BETS = True
 RESHUFFLE_EVERY_ROUND = False
 main(1000)
