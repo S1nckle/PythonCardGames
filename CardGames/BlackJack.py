@@ -1,4 +1,4 @@
-from CardGames import CardPile
+import CardPile
 
 class Dealer(CardPile.Hand):
     def __init__(self):
