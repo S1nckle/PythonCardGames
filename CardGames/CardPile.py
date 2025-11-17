@@ -116,7 +116,7 @@ class Hand:
 
     def take(self, card: Card) -> Card:
         """
-        Adds given card to hand
+        Adds given card to hand. Used in pair with CardPile.draw()
         :param card: Given card
         :return: The same card
         """
@@ -129,6 +129,17 @@ class Hand:
         :return:
         """
         self.__hand__.clear()
+    def get_size(self):
+        """
+        :return: Quantity of cards in hand
+        """
+        return len(self.__hand__)
+
+    def retract(self):
+        """
+        :return: Last card, also removing it form hand
+        """
+        return self.__hand__.pop(-1)
 
     def __str__(self):
         return ', '.join([str(card) for card in self.__hand__])
