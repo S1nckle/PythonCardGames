@@ -61,11 +61,15 @@ class BlackJack:
 
     def play(self, bet=0):
         doubled = 0
+        split = 0
+
+        # Draw starter hands
         for i in range(2):
             self.dealer.take(self.deck.draw())
             self.player.take(self.deck.draw())
         self.print_drawn_state()
 
+        #If someone already won then finish
         drawn_player = BlackJack.count_total(self.player)
         drawn_dealer = BlackJack.count_total(self.dealer)
 
@@ -82,7 +86,7 @@ class BlackJack:
             print("Dealer won!".center(52, ' '))
             return 0
 
-
+        # Read players moves
         move = input('Type H to HIT, D to DOUBLE, S to SPLIT and ANY to STAY: \n')
 
         while move == BlackJack.HIT or move == BlackJack.DOUBLE or move == BlackJack.SPLIT:
@@ -103,19 +107,19 @@ class BlackJack:
                     return 0 - bet * doubled
                 break
             if move == BlackJack.SPLIT:
-                print("We don't split.\n")
+                print("We don't split.\n") # TODO: Implement splitting
                 move = input('Type H to HIT, D to DOUBLE, S to SPLIT and ANY to STAY: \n')
 
-
+        # Dealer's logic
         while BlackJack.count_total(self.dealer) < 17:
             self.dealer.take(self.deck.draw())
         self.print_state()
 
+        #Learn who wins
         dealer_total = BlackJack.count_total(self.dealer)
         if dealer_total > 21:
             print("You won!".center(52, ' '))
             return bet * 2 + bet * doubled
-
         player_total = BlackJack.count_total(self.player)
         if player_total > dealer_total:
             print("You won!".center(52, ' '))
@@ -175,6 +179,7 @@ def main(money: int):
                 print(f"Your networth remained at {money}")
                 print(f"You lost {max(0, lost)}$ and gained {max(0, gained)}$ while playing")
             print("Thanks for game.")
+            input()
             break
 
 
