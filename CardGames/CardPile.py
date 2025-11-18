@@ -129,6 +129,7 @@ class Hand:
         :return:
         """
         self.__hand__.clear()
+        return self
     def get_size(self):
         """
         :return: Quantity of cards in hand

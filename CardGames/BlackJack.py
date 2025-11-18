@@ -64,8 +64,9 @@ class BlackJack:
             print("Player: ", self.player[i], end='\n')
         print('|============(Dealer must take until 17)===========|', end='\n\n')
 
-    def play(self):
+    def play(self, bet: int) -> int:
         win = 0
+        doubles = []
         if RESHUFFLE_EVERY_ROUND:
             self.deck.reset()
             self.deck.shuffle()
@@ -83,15 +84,15 @@ class BlackJack:
             self.print_state()
             if p_count == 21:
                 print("Stay!".center(52, ' '))
-                return
+                return bet
             else:
                 print("Dealer won!".center(52, ' '))
-                return
+                return 0
         else:
             if p_count == 21:
                 self.print_state()
                 print("You won!".center(52, ' '))
-                return
+                return bet + bet * 3 // 2
 
         #Player moves
         for hand in self.player:
@@ -113,6 +114,8 @@ class BlackJack:
                     else:
                         hand.take(self.deck.draw())
                         self.print_drawn_state(hand)
+                        win -= bet
+                        doubles.append(hand)
                         if BlackJack.count_total(hand) > 21:
                             print("Busted!".center(52, ' '))
                         break
@@ -126,10 +129,12 @@ class BlackJack:
                             print("You can only split two cards of same rank!")
                             move = input(f"Type {BlackJack.HIT} to HIT, {BlackJack.DOUBLE} to DOUBLE, {BlackJack.SPLIT} to SPLIT or ANY to Stay!\n")
                         else:
-                            self.player.append(CardPile.Hand())
-                            self.player[-1].take(self.player[-2].retract())
-                            self.player[-2].take(self.deck.draw())
-                            self.player[-1].take(self.deck.draw())
+                            win -= bet
+                            splithand = CardPile.Hand()
+                            self.player.append(splithand)
+                            splithand.take(hand.retract())
+                            hand.take(self.deck.draw())
+                            splithand.take(self.deck.draw())
                             self.print_drawn_state(hand)
                             move = input(f"Type {BlackJack.HIT} to HIT, {BlackJack.DOUBLE} to DOUBLE, {BlackJack.SPLIT} to SPLIT or ANY to Stay!\n")
 
@@ -147,36 +152,71 @@ class BlackJack:
             if p_count[0] > 21:
                 print("You busted!".center(52, ' '))
             else:
-                if p_count[0] > d_count:
-                    print("You won!".center(52, ' '))
-                elif p_count[0] == d_count:
+                hand = self.player[0]
+                if p_count[0] == d_count:
                     print("Stay!".center(52, ' '))
-                else:
+                    if hand in doubles:
+                        win += bet * 2
+                    else:
+                        win += bet
+                elif p_count[0] < d_count <= 21:
                     print("Dealer won!".center(52, ' '))
+                else:
+                    print("You won!".center(52, ' '))
+                    if hand in doubles:
+                        win += bet * 4
+                    else:
+                        win += bet * 2
         else:
             for i in range(len(p_count)):
+                hand = self.player[i]
                 if p_count[i] > 21:
                     print(f"Hand {i + 1}: busted!".center(52, ' '))
-                if p_count[i] > d_count:
-                    print(f"Hand {i + 1}: you won!".center(52, ' '))
                 elif p_count[i] == d_count:
                     print(f"Hand {i + 1}: stay!".center(52, ' '))
+                    if hand in doubles:
+                        win += bet * 2
+                    else:
+                        win += bet
                 elif p_count[i] < d_count <= 21:
                     print(f"Hand {i + 1}: dealer won!".center(52, ' '))
                 else:
                     print(f"Hand {i + 1}: you won!".center(52, ' '))
+                    if hand in doubles:
+                        win += bet * 4
+                    else:
+                        win += bet * 2
+        return win
 
 
+def start():
+    if BET:
+        money = MONEY
+        bet = 0
+        last_bet = bet
+
+    while True:
+        if BET:
+            try:
+                bet = int(input("Place your bet: "))
+            except Exception:
+                bet = last_bet
+            last_bet = bet
+            money += bj.play(bet) - bet
+        else:
+            bj.play(0)
+
+        bj.dealer.clear()
+        bj.player = [bj.player[0].clear()]
+
+        if BET:
+            print(f"Networth: {money}$".center(52, ' '))
+
+        if input(f"Type {BlackJack.LEAVE} to leave\n".center(52, ' ')) == BlackJack.LEAVE:
+            break
 
 RESHUFFLE_EVERY_ROUND = True
+BET = True
+MONEY = 1000
 bj = BlackJack()
-while True:
-    bj.play()
-    bj.dealer.clear()
-    for i in range(len(bj.player)):
-        if i == 0:
-            bj.player[i].clear()
-        else:
-            bj.player.pop(i)
-    if input(f"Type {BlackJack.LEAVE} to leave") == BlackJack.LEAVE:
-        break
+start()
