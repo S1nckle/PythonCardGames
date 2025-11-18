@@ -1,6 +1,6 @@
-import CardPile
+import BoardGames
 
-class Dealer(CardPile.Hand):
+class Dealer(BoardGames.Hand):
     def __init__(self):
         super().__init__()
 
@@ -18,12 +18,12 @@ class BlackJack:
     LEAVE = 'L'
 
     def __init__(self):
-        self.deck = CardPile.CardPile()
-        self.player = [CardPile.Hand()]
+        self.deck = BoardGames.CardPile()
+        self.player = [BoardGames.Hand()]
         self.dealer = Dealer()
 
     @staticmethod
-    def count_total(hand: CardPile.Hand):
+    def count_total(hand: BoardGames.Hand):
         """
         :param hand: Hand to count
         :return: Total score of given hand via rules of Black Jack
@@ -42,7 +42,7 @@ class BlackJack:
 
         return total
 
-    def print_drawn_state(self, current: CardPile.Hand):
+    def print_drawn_state(self, current: BoardGames.Hand):
         """
         :return: Pseudographic UI of the game
         """
@@ -130,7 +130,7 @@ class BlackJack:
                             move = input(f"Type {BlackJack.HIT} to HIT, {BlackJack.DOUBLE} to DOUBLE, {BlackJack.SPLIT} to SPLIT or ANY to Stay!\n")
                         else:
                             win -= bet
-                            splithand = CardPile.Hand()
+                            splithand = BoardGames.Hand()
                             self.player.append(splithand)
                             splithand.take(hand.retract())
                             hand.take(self.deck.draw())
