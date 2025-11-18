@@ -133,10 +133,10 @@ class BlackJack:
                             self.print_drawn_state(hand)
                             move = input(f"Type {BlackJack.HIT} to HIT, {BlackJack.DOUBLE} to DOUBLE, {BlackJack.SPLIT} to SPLIT or ANY to Stay!\n")
 
-
-        # Dealer moves
-        while BlackJack.count_total(self.dealer) < 17:
-            self.dealer.take(self.deck.draw())
+        if not all(BlackJack.count_total(hand) > 21 for hand in self.player):
+            # Dealer moves
+            while BlackJack.count_total(self.dealer) < 17:
+                self.dealer.take(self.deck.draw())
         self.print_state()
 
         # Results
@@ -161,8 +161,10 @@ class BlackJack:
                     print(f"Hand {i + 1}: you won!".center(52, ' '))
                 elif p_count[i] == d_count:
                     print(f"Hand {i + 1}: stay!".center(52, ' '))
-                else:
+                elif p_count[i] < d_count <= 21:
                     print(f"Hand {i + 1}: dealer won!".center(52, ' '))
+                else:
+                    print(f"Hand {i + 1}: you won!".center(52, ' '))
 
 
 
