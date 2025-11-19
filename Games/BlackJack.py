@@ -1,6 +1,6 @@
-import CardPile
+from CardGames.GameSets import Cards
 
-class Dealer(CardPile.Hand):
+class Dealer(Cards.Hand):
     def __init__(self):
         super().__init__()
 
@@ -17,12 +17,12 @@ class BlackJack:
     DOUBLE = 'D'
 
     def __init__(self):
-        self.deck = CardPile.CardPile()
-        self.player = CardPile.Hand()
+        self.deck = Cards.CardPile()
+        self.player = Cards.Hand()
         self.dealer = Dealer()
 
     @staticmethod
-    def count_total(hand: CardPile.Hand):
+    def count_total(hand: Cards.Hand):
         """
         :param hand: Hand to count
         :return: Total score of given hand via rules of Black Jack
