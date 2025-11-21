@@ -76,6 +76,7 @@ class CardPile:
             new_pile.append(self.__pile__.pop(randint(0, len(self.__pile__) - 1)))
         self.__pile__ = new_pile
         print("Riffle shuffle!")
+        return self
 
     def draw(self) -> Card:
         """
@@ -98,6 +99,7 @@ class CardPile:
                 self.__pile__.append(Card(rank, suit))
         self.__size__ = len(self.__pile__)
         print("Deck reset!")
+        return self
 
     def __str__(self):
         return ', '.join([str(card) for card in self.__pile__])
