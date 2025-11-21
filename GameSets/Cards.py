@@ -42,7 +42,6 @@ class Card:
         return self.__str__()
 
 
-
 class CardPile:
     def __init__(self):
         self.__pile__ = []
@@ -116,7 +115,7 @@ class Hand:
 
     def take(self, card: Card) -> Card:
         """
-        Adds given card to hand
+        Adds given card to hand. Used in pair with CardPile.draw()
         :param card: Given card
         :return: The same card
         """
@@ -129,6 +128,31 @@ class Hand:
         :return:
         """
         self.__hand__.clear()
+        return self
+
+    def get_size(self):
+        """
+        :return: Quantity of cards in hand
+        """
+        return len(self.__hand__)
+
+    def retract(self):
+        """
+        :return: Last card, also removing it form hand
+        """
+        return self.__hand__.pop(-1)
 
     def __str__(self):
         return ', '.join([str(card) for card in self.__hand__])
+
+
+class Dice:
+    def __init__(self, sides: int):
+        self.__sides__ = sides
+
+    def get_sides(self) -> int:
+        return self.__sides__
+
+    def throw(self) -> int:
+        from random import randint
+        return randint(1, self.__sides__)
