@@ -16,4 +16,5 @@ class DicePoker:
         print("|=====================|")
 
     def play(self):
+        pass
 

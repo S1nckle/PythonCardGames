@@ -1,3 +1,5 @@
+from numpy.random import randint
+
 from CardGames.GameSets import Cards
 
 class Dealer(Cards.Hand):
@@ -68,9 +70,6 @@ class BlackJack:
     def play(self, bet: int) -> int:
         win = 0
         doubles = []
-        if RESHUFFLE_EVERY_ROUND:
-            self.deck.reset()
-            self.deck.shuffle()
 
         # Draw cards
         for i in range(2):
@@ -196,7 +195,17 @@ def start():
         bet = 0
         last_bet = bet
 
+    if not RESHUFFLE_EVERY_ROUND:
+        cut = randint(bj.deck.get_size() // 4, bj.deck.get_size() // 2)
+        bj.deck.reset().shuffle()
     while True:
+        if RESHUFFLE_EVERY_ROUND:
+            bj.deck.reset().shuffle()
+        else:
+            if bj.deck.get_size() < cut:
+                bj.deck.reset()
+                bj.deck.shuffle()
+                cut = randint(bj.deck.get_size() // 4, bj.deck.get_size() // 2)
         if BET:
             try:
                 bet = int(input("Place your bet: "))
@@ -216,7 +225,7 @@ def start():
         if input(f"Type {BlackJack.LEAVE} to leave\n".center(52, ' ')) == BlackJack.LEAVE:
             break
 
-RESHUFFLE_EVERY_ROUND = True
+RESHUFFLE_EVERY_ROUND = False
 BET = True
 MONEY = 1000
 bj = BlackJack()
