@@ -1,0 +1,13 @@
+[
+  {
+    "RESHUFFLE_EVERY_ROUND": true,
+    "BET": true,
+    "MONEY": 1000
+  },
+  {
+    "HIT": "H",
+    "SPLIT": "S",
+    "DOUBLE": "D",
+    "LEAVE": "L"
+  }
+]

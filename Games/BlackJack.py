@@ -1,3 +1,5 @@
+import json
+
 from numpy.random import randint
 
 from CardGames.GameSets import Cards
@@ -14,10 +16,7 @@ class Dealer(Cards.Hand):
         return f"{self.get_hand()[0]}, ?"
 
 class BlackJack:
-    HIT = 'H'
-    SPLIT = 'S'
-    DOUBLE = 'D'
-    LEAVE = 'L'
+    HIT, SPLIT, DOUBLE, LEAVE = json.load(open("..\\settings\\blackjack_options.json"))[1].values()
 
     def __init__(self):
         self.deck = Cards.CardPile()
@@ -225,8 +224,7 @@ def start():
         if input(f"Type {BlackJack.LEAVE} to leave\n".center(52, ' ')) == BlackJack.LEAVE:
             break
 
-RESHUFFLE_EVERY_ROUND = False
-BET = True
-MONEY = 1000
+RESHUFFLE_EVERY_ROUND, BET, MONEY = json.load(open("..\\settings\\blackjack_options.json"))[0].values()
+
 bj = BlackJack()
 start()

@@ -10,11 +10,19 @@ class DicePoker:
 
     def print_stage(self):
         print("|======Dice Game======|")
-        print(' '.join(self.bot.get_last_throw()).center(23, ' '))
+        print('Bot'.center(23, ' '))
+        print(' '.join([str(i) for i in self.bot.get_last_throw()]).center(23, ' '))
         print()
-        print(' '.join(self.player.get_last_throw()).center(23, ' '))
+        print('You'.center(23, ' '))
+        print(' '.join([str(i) for i in self.player.get_last_throw()]).center(23, ' '))
         print("|=====================|")
 
     def play(self):
-        pass
+        while True:
+            self.bot.throw_all()
+            self.player.throw_all()
+            self.print_stage()
+            input()
 
+game = DicePoker()
+game.play()
