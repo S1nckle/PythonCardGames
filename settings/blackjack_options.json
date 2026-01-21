@@ -1,6 +1,6 @@
 [
   {
-    "RESHUFFLE_EVERY_ROUND": true,
+    "RESHUFFLE_EVERY_ROUND": false,
     "BET": true,
     "MONEY": 1000
   },

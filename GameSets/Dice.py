@@ -19,10 +19,20 @@ class Hand:
         """
 
         self.__hand__ = dice
-        self.__last_throw = [0 for i in range(len(dice))]
+        self.__last_throw = [None for i in range(len(dice))]
 
     def get_hand(self):
         return self.__hand__.copy()
+
+    def throw(self, which:list):
+        throw = []
+        for i in range(len(self.__hand__)):
+            if i in which:
+                throw.append(self.__hand__[i].throw())
+            else:
+                throw.append(self.__last_throw[i])
+        self.__last_throw = throw
+        return throw
 
     def throw_all(self) -> list:
         self.__last_throw = [dice.throw() for dice in self.get_hand()]
@@ -35,7 +45,7 @@ class Hand:
         """
         Nullifies stats.
         """
-        self.__last_throw = [0 for i in range(len(self.get_hand()))]
+        self.__last_throw = [None for i in range(len(self.get_hand()))]
 
 
 

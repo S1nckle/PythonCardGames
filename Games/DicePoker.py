@@ -18,11 +18,15 @@ class DicePoker:
         print("|=====================|")
 
     def play(self):
+        self.bot.throw_all()
+        self.player.throw_all()
+        self.print_stage()
         while True:
+            throw = [int(i) - 1 for i in ''.join(s if s.isdigit() else '' for s in input("Which to throw?"))]
             self.bot.throw_all()
-            self.player.throw_all()
+            self.player.throw(throw)
             self.print_stage()
-            input()
+
 
 game = DicePoker()
 game.play()
